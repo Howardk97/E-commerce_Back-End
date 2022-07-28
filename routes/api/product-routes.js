@@ -1,3 +1,4 @@
+// Import packages and Models
 const router = require('express').Router();
 const { Product, Category, Tag, ProductTag } = require('../../models');
 
@@ -21,19 +22,25 @@ router.get('/:id', async (req, res) => {
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
   try {
+    // Finds the data by the primary key entered in the url
     const productData = await Product.findByPk(req.params.id, {
+      // Includes data from the Category and Tag models
       include: [
         {model: Category}, 
-        {model: ProductTag}
+        {model: Tag}
       ]
     })
 
+    // If no product data entered...
     if (!productData) {
+      // Throw a 404 status code error with the custom message
       res.status(404).json({ message: "There are no products with this id!"});
       return;
     }
+    // Throw a 200 status code if product data went through successfully
     res.status(200).json(productData);
   } catch (err) {
+    // Throw a 500 status code error if there was an error in the route
       res.status(500).json(err);
   }
 });
@@ -48,6 +55,8 @@ router.post('/', (req, res) => {
       tagIds: [1, 2, 3, 4]
     }
   */
+
+    // Create 
   Product.create(req.body)
     .then((product) => {
       // if there's product tags, we need to create pairings to bulk create in the ProductTag model
@@ -112,8 +121,29 @@ router.put('/:id', (req, res) => {
     });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async(req, res) => {
   // delete one product by its `id` value
+  try {
+    // Delete the data using the id entered in the URL
+    const productData = await Product.destroy({
+      where: {
+        id: req.params.id,
+      }
+    })
+
+    // If no key provided...
+    if(!productData) {
+      // Throw a 404 status code error
+      res.status(404).json({ message: 'There is no such product with this id!' });
+      return;
+    }
+    // If successful, throw a 200 status code
+    res.status(200).json(productData);
+  } catch (err) {
+    // Throw a 500 status code error if error in route
+      res.status(500).json(err);
+  }
 });
 
+// Export routes
 module.exports = router;
