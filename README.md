@@ -9,6 +9,8 @@
 
   *What Developer Learned
   How to use routes to find, create, update, and delete data from a database.
+
+  [Watch the Video!](https://drive.google.com/file/d/19FmM7A49LODhEBCfHs-EsTiM8uj3TlI1/view)
     
 ## Installation
 run "npm i" in your terminal.
